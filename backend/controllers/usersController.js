@@ -75,6 +75,7 @@ const usersController = {
   }),
 
   //!Profile
+  profile: asyncHandler(async (req, res) => {}),
 };
 
 module.exports = usersController;
