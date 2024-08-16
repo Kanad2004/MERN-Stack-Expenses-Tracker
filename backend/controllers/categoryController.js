@@ -49,26 +49,39 @@ const categoryController = {
     res.status(200).json(categories);
   }),
 
-  //!Update
   update: asyncHandler(async (req, res) => {
     const categoryId = req.params.id;
     const { type, name } = req.body;
-    const nomralizedName = name.toLowerCase();
+
     const category = await Category.findById(categoryId);
-    if (!category && category.user.toString() !== req.user.toString()) {
+
+    if (!category || category.user.toString() !== req.user) {
       throw new Error("Category not found or user not authorized");
     }
+
     const oldName = category.name;
-    //!update category properties
-    category.name = name;
-    category.type = type;
+    const oldType = category.type;
+
+    // Update category properties only if they are provided
+    if (name) {
+      category.name = name.toLowerCase();
+    } else {
+      category.name = oldName;
+    }
+    if (type) {
+      category.type = type.toLowerCase();
+    } else {
+      category.type = oldType;
+    }
+
     const updatedCategory = await category.save();
-    //!Update affected transactions
+
+    // Update affected transactions if the category name changes
     if (oldName !== updatedCategory.name) {
       await Transaction.updateMany(
         {
           user: req.user,
-          category: oldName,
+          category: oldName, 
         },
         {
           $set: { category: updatedCategory.name },
@@ -82,12 +95,12 @@ const categoryController = {
   //!delete
   delete: asyncHandler(async (req, res) => {
     const category = await Category.findById(req.params.id);
-    if (category || category.user.toString() === req.user.toString()) {
+    if (category || category.user.toString() === req.user) {
       const defaultCategory = "Uncategorized";
       await Transaction.updateMany(
         {
           user: req.user,
-          category: category._id,
+          category: category.name,
         },
         { $set: { category: defaultCategory } }
       );
