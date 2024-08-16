@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Category = require("../model/Category");
+const Transaction = require("../model/Transactions");
 
 const categoryController = {
   //!add
@@ -46,6 +47,61 @@ const categoryController = {
       user: req.user,
     });
     res.status(200).json(categories);
+  }),
+
+  //!Update
+  update: asyncHandler(async (req, res) => {
+    const categoryId = req.params;
+    const { type, name } = req.body;
+    const nomralizedName = name.toLowerCase();
+    const category = await Category.findById(categoryId);
+    if (!category || category.user.toString() !== req.user.toString()) {
+      throw new Error("Category not found or user unauthorized");
+    }
+    const oldName = category.name;
+    //!Update category properties
+    category.name = nomralizedName;
+    category.type = type;
+    const updatedCategory = await category.save();
+    //!Update the affected transactions
+    if (oldName !== nomralizedName) {
+      await Transaction.updateMany(
+        {
+          user: req.user,
+          category: oldName,
+        },
+        {
+          $set: { category: updatedCategory.name },
+        }
+      );
+    }
+
+    res.status(200).json(updatedCategory);
+  }),
+
+  //!delete
+  delete: asyncHandler(async (req, res) => {
+    const category = await Category.findById(req.params.id);
+    if (category || category.user.toString() === req.user.toString()) {
+      const defaultCategory = "Uncategorized";
+      await Transaction.updateMany(
+        {
+          user: req.user,
+          category: category._id,
+        },
+        { $set: { category: defaultCategory } }
+      );
+
+      await Category.findByIdAndDelete(req.params.id);
+      res.json({
+        message: "Category deleted successfully",
+      });
+    }
+    else{
+      res.json({
+        message : 'Category not found or user unauthorized',
+      })
+    }
   }),
 };
 

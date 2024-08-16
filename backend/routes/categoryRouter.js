@@ -9,4 +9,10 @@ categoryRouter.post('/api/v1/categories/create', isAuth,  categoryController.cre
 //!lists
 categoryRouter.get('/api/v1/categories/lists' , isAuth , categoryController.lists);
 
+//!Update 
+categoryRouter.put('/api/v1/categories/update/:id', isAuth, categoryController.update);
+
+//!delete
+categoryRouter.delete('/api/v1/categories/delete/:id', isAuth, categoryController.delete);
+
 module.exports = categoryRouter;
