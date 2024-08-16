@@ -12,7 +12,7 @@ transactionRouter.post(
 transactionRouter.get(
   "/api/v1/transactions/lists",
   isAuth,
-  transactionController.lists
+  transactionController.getFilteredTransactions
 );
 
 module.exports = transactionRouter;
