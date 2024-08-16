@@ -53,6 +53,34 @@ const transactionController = {
     });
     res.json(transactions);
   }),
+
+  //!update
+  update: asyncHandler(async (req, res) => {
+    //!Find the transaction
+    const transaction = await Transaction.findById(req.params.id);
+    if (transaction && transaction.user.toString() === req.user.toString()) {
+      transaction.type = req.body.type || transaction.type;
+      transaction.category = req.body.category || transaction.category;
+      transaction.amount = req.body.amount || transaction.amount;
+      transaction.date = req.body.date || transaction.date;
+      transaction.description = req.body.description || transaction.description;
+
+      const updatedTransaction = await transaction.save();
+      res.json(updatedTransaction);
+    }
+  }),
+
+  //!Delete
+  delete: asyncHandler(async (req, res) => {
+    const transaction = await Transaction.findById(req.params.id);
+    if (transaction && transaction.user.toString() === req.user.toString()) {
+      await transaction.deleteOne(); // Use deleteOne instead of remove
+      res.json({ message: "Transaction deleted successfully" });
+    } else {
+      res.status(404);
+      throw new Error("Transaction not found or user unauthorized");
+    }
+  }),
 };
 
 module.exports = transactionController;
