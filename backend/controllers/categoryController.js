@@ -51,20 +51,20 @@ const categoryController = {
 
   //!Update
   update: asyncHandler(async (req, res) => {
-    const categoryId = req.params;
+    const categoryId = req.params.id;
     const { type, name } = req.body;
     const nomralizedName = name.toLowerCase();
     const category = await Category.findById(categoryId);
-    if (!category || category.user.toString() !== req.user.toString()) {
-      throw new Error("Category not found or user unauthorized");
+    if (!category && category.user.toString() !== req.user.toString()) {
+      throw new Error("Category not found or user not authorized");
     }
     const oldName = category.name;
-    //!Update category properties
-    category.name = nomralizedName;
+    //!update category properties
+    category.name = name;
     category.type = type;
     const updatedCategory = await category.save();
-    //!Update the affected transactions
-    if (oldName !== nomralizedName) {
+    //!Update affected transactions
+    if (oldName !== updatedCategory.name) {
       await Transaction.updateMany(
         {
           user: req.user,
@@ -76,7 +76,7 @@ const categoryController = {
       );
     }
 
-    res.status(200).json(updatedCategory);
+    res.json(updatedCategory);
   }),
 
   //!delete
@@ -96,11 +96,10 @@ const categoryController = {
       res.json({
         message: "Category deleted successfully",
       });
-    }
-    else{
+    } else {
       res.json({
-        message : 'Category not found or user unauthorized',
-      })
+        message: "Category not found or user unauthorized",
+      });
     }
   }),
 };
