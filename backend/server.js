@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = require("./routes/userRouter");
 const app = express();
+const cors = require("cors");
 const mongoose = require("mongoose");
 const errorHandler = require("./middlewares/errorHandlingMiddleware");
 const categoryRouter = require("./routes/categoryRouter");
@@ -16,6 +17,13 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+//!Cors configuration
+const corsOptions = {
+  origin: ["http://localhost:5173"],
+};
+
+app.use(cors(corsOptions));
 
 //!Middleware
 app.use(express.json()); //?Pass data in json
