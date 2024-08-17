@@ -3,12 +3,16 @@ import HeroSection from "./components/Home/Homepage";
 import PublicNavbar from "./components/Navbar/PublicNavbar";
 import LoginForm from "./components/Users/Login";
 import RegistrationForm from "./components/Users/Register";
+import PrivateNavbar from "./components/Navbar/PrivateNavbar";
+import { getUserFromStorage } from "./utils/getUserFromStorage";
 
 function App() {
+  //Get the token
+  const token = getUserFromStorage();
+  console.log(token);
   return (
     <BrowserRouter>
-      {/* Navbar */}
-      <PublicNavbar />
+      {token ? <PrivateNavbar /> : <PublicNavbar />}
       <Routes>
         <Route path="/" element={<HeroSection />} />
         <Route path="/login" element={<LoginForm />} />
