@@ -5,7 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { loginAPI } from "../../services/users/userServices";
 import AlertMessage from "../Alert/AlertMessage";
-
+import { loginAction } from "../../redux/slice/authSlice";
+import { useDispatch } from "react-redux";
 //!Validations
 const validationsSchema = Yup.object({
   email: Yup.string().email("Invalid").required("Email is required"),
@@ -14,6 +15,8 @@ const validationsSchema = Yup.object({
     .required("Password is required"),
 });
 const LoginForm = () => {
+  //Instance of dispatch
+  const dispatch = useDispatch();
   //Mutation
   const { mutateAsync, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: loginAPI,
@@ -21,8 +24,8 @@ const LoginForm = () => {
   });
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: "ben@gmail.com",
+      password: "Kanad@2004",
     },
     // Validations
     validationSchema: validationsSchema,
@@ -31,7 +34,12 @@ const LoginForm = () => {
       console.log(values);
       //http requests
       mutateAsync(values)
-        .then((data) => {})
+        .then((data) => {
+          //dispatch the action
+          dispatch(loginAction(data));
+          //Save the user into local storage
+          localStorage.setItem('userInfo' , JSON.stringify(data)); 
+        })
         .catch((err) => console.log(err));
     },
   });
@@ -51,9 +59,7 @@ const LoginForm = () => {
       {isError && (
         <AlertMessage type="error" message={error.response.data.message} />
       )}
-      {isSuccess && (
-        <AlertMessage type="success" message="Login Successful" />
-      )}
+      {isSuccess && <AlertMessage type="success" message="Login Successful" />}
       <p className="text-sm text-center text-gray-500">
         Login to access your account
       </p>

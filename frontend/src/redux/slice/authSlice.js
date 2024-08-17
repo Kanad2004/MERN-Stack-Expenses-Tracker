@@ -4,24 +4,24 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    user: JSON.parse(localStorage.getItem("userInfo")) || null,
   },
 
   //?1.Reducers
   reducers: {
     loginAction: (state, action) => {
       state.user = action.payload;
+
     },
 
-    logoutAction: (state , action) => {
+    logoutAction: (state, action) => {
       state.user = null;
     },
   },
 });
 
-
 //!Generate the actions
-export const {loginAction , logoutAction} = authSlice.actions;
+export const { loginAction, logoutAction } = authSlice.actions;
 
 //!Generate the reducers
 const authReducer = authSlice.reducer;
