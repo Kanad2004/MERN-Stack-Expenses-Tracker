@@ -6,6 +6,7 @@ import RegistrationForm from "./components/Users/Register";
 import PrivateNavbar from "./components/Navbar/PrivateNavbar";
 import { getUserFromStorage } from "./utils/getUserFromStorage";
 import { useSelector } from "react-redux";
+import AddCategory from "./components/Category/AddCategory";
 
 function App() {
   const user = useSelector((state) => state?.auth?.user);
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<HeroSection />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/add-category" element={<AddCategory />} />
       </Routes>
     </BrowserRouter>
   );
