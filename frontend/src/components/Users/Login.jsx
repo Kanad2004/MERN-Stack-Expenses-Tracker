@@ -7,6 +7,8 @@ import { loginAPI } from "../../services/users/userServices";
 import AlertMessage from "../Alert/AlertMessage";
 import { loginAction } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 //!Validations
 const validationsSchema = Yup.object({
   email: Yup.string().email("Invalid").required("Email is required"),
@@ -15,6 +17,8 @@ const validationsSchema = Yup.object({
     .required("Password is required"),
 });
 const LoginForm = () => {
+  //Instance of navigate
+  const navigate = useNavigate();
   //Instance of dispatch
   const dispatch = useDispatch();
   //Mutation
@@ -38,14 +42,19 @@ const LoginForm = () => {
           //dispatch the action
           dispatch(loginAction(data));
           //Save the user into local storage
-          localStorage.setItem('userInfo' , JSON.stringify(data)); 
+          localStorage.setItem("userInfo", JSON.stringify(data));
         })
         .catch((err) => console.log(err));
     },
   });
-
-  console.log({ isPending, isError, error, isSuccess });
-
+  //Redirect
+  useEffect(() => {
+    setTimeout(() => {
+      if (isSuccess) {
+        navigate("/profile");
+      }
+    }, 3000);
+  }, [isPending, isError, error, isSuccess]);
   return (
     <form
       onSubmit={formik.handleSubmit}
