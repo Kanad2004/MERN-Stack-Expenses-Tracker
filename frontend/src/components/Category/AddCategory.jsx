@@ -13,9 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { addCategoryAPI } from "../../services/category/categoryServices";
 import AlertMessage from "../Alert/AlertMessage";
 
-
 const validationSchema = Yup.object({
-  name: Yup.string().required("Category name is required"), 
+  name: Yup.string().required("Category name is required"),
   type: Yup.string()
     .required("Category type is required")
     .oneOf(["income", "expense"]),
@@ -39,15 +38,14 @@ const AddCategory = () => {
     onSubmit: (values) => {
       mutateAsync(values)
         .then((data) => {
-          console.log(data);
+          //redirect
+          navigate("/categories");
         })
         .catch((err) => {
           console.log(err);
         });
     },
   });
-
-  console.log({ isError, error, isPending, isSuccess });
 
   return (
     <form
