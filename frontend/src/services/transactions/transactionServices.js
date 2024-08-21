@@ -32,3 +32,14 @@ export const addTransactionAPI = async ({
   //!Return a promise
   return response.data;
 };
+
+//!lists
+export const listTransactionsAPI = async () => {
+  const response = await axios.get(`${BASE_URL}/transactions/lists`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
