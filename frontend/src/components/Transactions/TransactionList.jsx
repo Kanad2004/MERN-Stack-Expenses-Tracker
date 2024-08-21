@@ -7,6 +7,23 @@ import { listTransactionsAPI } from "../../services/transactions/transactionServ
 import { listCategoriesAPI } from "../../services/category/categoryServices";
 
 const TransactionList = () => {
+  //!filtering
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    type: "",
+    category: "",
+  });
+
+  //!Handle filter change
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   //Fetching all categories
   const {
     data: categoriesData,
@@ -28,14 +45,16 @@ const TransactionList = () => {
     refetch,
     error,
   } = useQuery({
-    queryFn: listTransactionsAPI,
-    queryKey: ["list-transactions"],
+    queryFn: () => listTransactionsAPI(filters),
+    queryKey: ["list-transactions" , filters],
   });
   return (
     <div className="my-4 p-4 shadow-lg rounded-lg bg-white">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Start Date */}
         <input
+          value={filters.startDate}
+          onChange={handleFilterChange}
           type="date"
           name="startDate"
           className="p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
@@ -44,12 +63,16 @@ const TransactionList = () => {
         <input
           type="date"
           name="endDate"
+          value={filters.endDate}
+          onChange={handleFilterChange}
           className="p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
         />
         {/* Type */}
         <div className="relative">
           <select
             name="type"
+            value={filters.type}
+            onChange={handleFilterChange}
             className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 appearance-none"
           >
             <option value="">All Types</option>
@@ -61,9 +84,13 @@ const TransactionList = () => {
         {/* Category */}
         <div className="relative">
           <select
+            value={filters.category}
+            onChange={handleFilterChange}
             name="category"
             className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 appearance-none"
           >
+            <option value="All">All Categories</option>
+            <option value="Uncategorized">Uncategorized</option>
             <option value="">Select a category</option>
             {categoriesData?.map((category) => {
               return (
