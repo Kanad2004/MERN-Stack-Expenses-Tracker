@@ -7,6 +7,7 @@ import { listTransactionsAPI } from "../../services/transactions/transactionServ
 import { listCategoriesAPI } from "../../services/category/categoryServices";
 
 const TransactionList = () => {
+  
   //!filtering
   const [filters, setFilters] = useState({
     startDate: "",
@@ -46,7 +47,7 @@ const TransactionList = () => {
     error,
   } = useQuery({
     queryFn: () => listTransactionsAPI(filters),
-    queryKey: ["list-transactions" , filters],
+    queryKey: ["list-transactions", filters],
   });
   return (
     <div className="my-4 p-4 shadow-lg rounded-lg bg-white">
