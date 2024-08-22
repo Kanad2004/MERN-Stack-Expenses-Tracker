@@ -104,7 +104,9 @@ const usersController = {
     user.password = hashedPassword;
 
     //!Resave
-    await user.save();
+    await user.save({
+      validateBeforeSave : false
+    });
 
     //!Send the response
     res.json({
