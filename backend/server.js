@@ -20,7 +20,15 @@ mongoose
 
 //!Cors configuration
 const corsOptions = {
+<<<<<<< HEAD
   origin: "http://localhost:5173",
+=======
+  origin: [
+    ""
+  ],
+  methods: ["POST", "GET"],
+  credentials: true,
+>>>>>>> 48d67a5a6d8495902a8527d714fb82aac15db210
 };
 
 app.use(cors(corsOptions));
