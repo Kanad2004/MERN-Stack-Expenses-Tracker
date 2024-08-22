@@ -21,7 +21,7 @@ mongoose
 //!Cors configuration
 const corsOptions = {
   origin: [
-    "https://mern-expenses-tracker-1whq.vercel.app",
+    "https://mern-stack-expenses-tracker-api.vercel.app/",
     "http://localhost:5173",
   ],
   methods: ["POST", "GET"],
